@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TwilioUtils {
 
-	private static final String API_KEY = "ENTER_API_KEY";
-	private static final String ACCOUNT_SID = "ENTER_ACCOUNT_SID";
-	private static final String ACCOUNT_AUTH_TOKEN = "ENTER_ACCOUNT_AUTH_TOKEN";
-	private static final String FROM_NUMBER = "ENTER_FROM_NUMBER";
+	private static final String API_KEY = "AccountApp";
+	private static final String ACCOUNT_SID = "ACbed7a1f3c6f7f2b8907f07a5f5cf8987";
+	private static final String ACCOUNT_AUTH_TOKEN = "b06a52a81b4bf759a4311807e1170349";
+	private static final String FROM_NUMBER = "+12184526797";
 	private AuthyApiClient authyApiClient;
 
 	/**
@@ -44,8 +44,8 @@ public class TwilioUtils {
 	}
 	
 	public static void main(String[] args) throws AuthyException {
-		String phoneNumber = "+919756264795";
-		String sms = "Hello there!";
+		String phoneNumber = "+972524337074";  //919756264795
+		String sms = "Hello there";
 		
 		TwilioUtils smsSender = new TwilioUtils();
 		

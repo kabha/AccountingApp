@@ -23,6 +23,8 @@ public class AppEmailSender {
 	}
 	
 	public boolean sendHtmlMimeMessage(String toEmail, Float amount) throws MessagingException {
+		System.out.println(toEmail + amount);
+		
 		boolean status = false;
 		String text = "<div style='padding: 20px;'>Hi: <strong>"+toEmail+"</strong>, "
 				+ "<br/>Thanks for Purchaging our services on AccountingApp<br/><br/>"
@@ -31,7 +33,7 @@ public class AppEmailSender {
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true);
 			helper.setTo(toEmail);
-			helper.setSubject("AccountingApp Payment");
+			helper.setSubject("AccountingApp Payment concluseion");
 			helper.setText(text, true);
 			javaMailSender.send(msg);
 			status = true;

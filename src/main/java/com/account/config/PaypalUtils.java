@@ -23,9 +23,9 @@ public class PaypalUtils {
 
 	private APIContext apiContext;
 	private String mode = "sandbox";
-	private String clientID = "ENTER_CLIENT_ID";
-	private String clientSecret = "ENTER_SECRET_KEY";
-	
+	private String clientID = "ATsCy40jJYzfhUqQTWovQUCo64sd2QT3oFN1atJgZdyJIzSiquITUTWE1q7M34lHosiOwy2_7voUK_n3";
+	private String clientSecret = "EP7IAd8iLSglvTFNHDIOzcrgS2M-9tkr9-hW9XsTr5fON-Nxrc000-IhmToyOTcZG7Gdap_kG1ypg6D3";
+
 	private static String amexRegex = "^3[47][0-9]{13}$";
 	private static String dinnerClubRegex = "^3(?:0[0-59]{1}|[689])[0-9]{0,}$";
 	private static String discoverRegex = "^6(?:011|5[0-9]{2})[0-9]{12}$";
@@ -44,11 +44,20 @@ public class PaypalUtils {
 	}
 
 	public CreditCard createCreditCard(CreditCard creditCard) throws PayPalRESTException {
-		APIContext apiContext = getApiContext();
-		creditCard.setExpireYear(calculateExpiryYear(creditCard.getExpireYear()));
-		creditCard.setType(getCreditCardType(creditCard.getNumber()));
-		System.out.println("Created-Card-Response: " + CreditCard.getLastResponse());
-		return creditCard.create(apiContext);
+		System.out.println("Hello Create CreditCard Paypal");
+		try {
+			//APIContext apiContext = getApiContext();
+			creditCard.setExpireYear(calculateExpiryYear(creditCard.getExpireYear()));
+			creditCard.setType(getCreditCardType(creditCard.getNumber()));
+			CreditCard credit= new CreditCard();
+			System.out.println("Created-Card-Response: " + CreditCard.getLastResponse());
+			APIContext context = new APIContext(clientID, clientSecret, "sandbox");
+			credit = creditCard.create(context);
+			System.out.println(creditCard.toJSON());
+			return credit;
+		}catch (PayPalRESTException e) {
+			System.err.println(e.getDetails());return null; 
+		}
 	}
 
 	public CreditCard getCreditCardDetails(String cardId) throws PayPalRESTException {
@@ -63,30 +72,37 @@ public class PaypalUtils {
 	}
 
 	public Payment createPaymentFromCreditCard(String cardId, float totalAmount, String desc) throws PayPalRESTException {
-		String totalAmountStr = String.format("%.2f", totalAmount);
-		APIContext apiContext = getApiContext();
-		Amount amount = new Amount();
-		amount.setCurrency(AppConstants.CURRENCY);
-		amount.setTotal(totalAmountStr);
-		Transaction transaction = new Transaction();
-		transaction.setAmount(amount);
-		transaction.setDescription(desc);
-		List<Transaction> transactions = new ArrayList<Transaction>();
-		transactions.add(transaction);
-		FundingInstrument fundingInstrument = new FundingInstrument();
-		fundingInstrument.setCreditCardToken(new CreditCardToken(cardId));
-		List<FundingInstrument> fundingInstruments = new ArrayList<FundingInstrument>();
-		fundingInstruments.add(fundingInstrument);
-		Payer payer = new Payer();
-		payer.setFundingInstruments(fundingInstruments);
-		payer.setPaymentMethod(AppConstants.PAYMENT_METHOD_CREDIT_CARD);
 		Payment payment = new Payment();
-		payment.setIntent("sale");
-		payment.setPayer(payer);
-		payment.setTransactions(transactions);
-		System.out.println("Payment: " + Payment.getLastResponse());
-		System.out.println("Payment: " + payment);
-		return payment.create(apiContext);
+		try {
+			String totalAmountStr = String.format("%.2f", totalAmount);
+			APIContext apiContext = getApiContext();//new APIContext(clientID, clientSecret, "sandbox");
+			Amount amount = new Amount();
+			amount.setCurrency(AppConstants.CURRENCY);
+			amount.setTotal(totalAmountStr);
+			Transaction transaction = new Transaction();
+			transaction.setAmount(amount);
+			transaction.setDescription(desc);
+			List<Transaction> transactions = new ArrayList<Transaction>();
+			transactions.add(transaction);
+			FundingInstrument fundingInstrument = new FundingInstrument();
+			fundingInstrument.setCreditCardToken(new CreditCardToken(cardId));
+			List<FundingInstrument> fundingInstruments = new ArrayList<FundingInstrument>();
+			fundingInstruments.add(fundingInstrument);
+			Payer payer = new Payer();
+			payer.setFundingInstruments(fundingInstruments);
+			payer.setPaymentMethod(AppConstants.PAYMENT_METHOD_CREDIT_CARD);
+			payment.setIntent("sale");
+			payment.setPayer(payer);
+			payment.setTransactions(transactions);
+			System.out.println("Payment: " + Payment.getLastResponse());
+			//APIContext context = new APIContext(clientID, clientSecret, "sandbox");
+			payment.create(apiContext);
+			System.out.println(payment.toJSON());
+			return payment;
+		} catch (PayPalRESTException e) {
+			System.err.println(e.getDetails());return null; 
+		}
+
 	}
 
 	private String getCreditCardType(String cardNumber) {
@@ -108,10 +124,15 @@ public class PaypalUtils {
 		} else if (cardNumber.matches(visaRegex)) {
 			result = "visa";
 		}
+
+		System.out.println("the creditcard type is "+result);
 		return result;
 	}
-	
+
 	private Integer calculateExpiryYear(Integer expiryYear) {
+		System.out.println("Inside the calculateExpiryYear");
+		System.out.println(expiryYear);
+
 		String expiryYearStr = String.valueOf(expiryYear);
 		if(expiryYear<10) {
 			expiryYearStr = "0"+expiryYearStr;
@@ -128,28 +149,29 @@ public class PaypalUtils {
 				expiryYearStr = currCentury+1+ expiryYearStr;
 			}
 		}
+		System.out.println(Integer.parseInt(expiryYearStr));
 		return Integer.parseInt(expiryYearStr);
 	}
-	
+
 	public static void main(String[] args) throws PayPalRESTException {
 		PaypalUtils paypal = new PaypalUtils();
 		CreditCard creditCard = new CreditCard();
-		creditCard.setNumber("5503728087510126");
+		creditCard.setNumber("45033333222222");
 		creditCard.setExpireMonth(12);
 		creditCard.setExpireYear(2023);
 		creditCard.setType("mastercard");
-		creditCard.setCvv2("610");
-		
+		creditCard.setCvv2("444");
+
 		String cardID = "CARD-89545574WU620321EL3C4THI";
 
-//		CreditCard cc = paypal.createCreditCard(creditCard);
-//		System.out.println(cc.getValidUntil());
-		
-//		paypal.createCreditCard(creditCard);
-//		paypal.createBillingPlan();
-//		paypal.getBillingPlan();
-//		paypal.createBillingAgreement();
+		CreditCard cc = paypal.createCreditCard(creditCard);
+		System.out.println(cc.getValidUntil());
+
+		paypal.createCreditCard(creditCard);
+		//		paypal.createBillingPlan();
+		//		paypal.getBillingPlan();
+		//		paypal.createBillingAgreement();
 		paypal.createPaymentFromCreditCard(cardID, 2.5f, "test");
-		
+
 	}
 }

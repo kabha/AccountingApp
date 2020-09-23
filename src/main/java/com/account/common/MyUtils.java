@@ -9,9 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.Random;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,7 @@ public class MyUtils {
 	
 	static {
 		try {
+			
 			String secretKey = "abcdefGHIJKLmnopqrsUVXYZ1234567890";
 			digestKey = MessageDigest.getInstance("SHA-1").digest(secretKey.getBytes("UTF-8"));
 			digestKey = Arrays.copyOf(digestKey, 16);
@@ -42,7 +45,7 @@ public class MyUtils {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String encrypt(String pwd) {
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
@@ -64,6 +67,7 @@ public class MyUtils {
 			return null;
 		}
 	}
+	
 	
 	public String encryptURLOnly(String str) {
 //        String encriptedStr = Base64.getEncoder().encodeToString("123".getBytes());

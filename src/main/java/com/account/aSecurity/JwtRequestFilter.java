@@ -47,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				}
 			}
 			if(authHeader == null && !request.getRequestURI().endsWith("login") 
-					&& !request.getRequestURI().endsWith("register") && !request.getRequestURI().endsWith("test22")) {
+					&& !request.getRequestURI().endsWith("register") && !request.getRequestURI().endsWith("/save-user")) {
 				throw new Exception("ERROR: Authorization-Header not fould");
 			}else {
 				filterChain.doFilter(request, response);

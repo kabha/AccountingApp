@@ -12,11 +12,12 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserCreditCard implements Serializable {
-	
+
 	private static final long serialVersionUID = 12345L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@NotNull
 	private Long userId;
 	private String cardId;
@@ -29,6 +30,22 @@ public class UserCreditCard implements Serializable {
 	private LocalDateTime createdOn;
 	@Transient
 	private Integer cvv2;
+
+
+	/*	public UserCreditCard(Long id, @NotNull Long userId, String cardId, String cardNumber, String cardNumberFull,
+			Integer expiryMonth, Integer expiryYear, String type, boolean active, LocalDateTime createdOn,Integer cvv2) {
+		this.id = id;
+		this.userId = userId;
+		this.cardId = cardId;
+		this.cardNumber = cardNumber;
+		this.cardNumberFull = cardNumberFull;
+		this.expiryMonth = expiryMonth;
+		this.expiryYear = expiryYear;
+		this.type = type;
+		this.active = active;
+		this.createdOn = createdOn;
+		this.cvv2 = cvv2;
+	}*/
 
 	public Long getId() {
 		return id;
@@ -96,5 +113,6 @@ public class UserCreditCard implements Serializable {
 	public void setCvv2(Integer cvv2) {
 		this.cvv2 = cvv2;
 	}
+
 
 }

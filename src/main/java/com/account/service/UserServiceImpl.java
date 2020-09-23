@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	private MyUtils myUtils;
 	
 	public AppUser saveUser(AppUser user) {
-		user.setPassword(myUtils.encrypt(user.getPassword()));
+		user.setPassword(myUtils.decrypt(user.getPassword()));
 		user.setCreatedOn(LocalDateTime.now());
 		return userRepository.save(user);
 	}

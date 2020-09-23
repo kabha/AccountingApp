@@ -41,7 +41,7 @@ public class PaymentController {
 		System.out.println("----------------test22---------------");
 		float amount = 1;
 		try {
-			emailSender.sendHtmlMimeMessage("sarfrazmalik111@gmail.com", amount);
+			emailSender.sendHtmlMimeMessage("Kabhad82@gmail.com", amount);
 			System.out.println("----------------Email-Send---------------");
 		}catch(Exception ex) {
 			ex.printStackTrace();
@@ -61,6 +61,7 @@ public class PaymentController {
 				AppUser user = userService.findUserById(paymentModal.getUserId());
 				emailSender.sendHtmlMimeMessage(user.getEmailId(), paymentModal.getAmount());
 				String sms = "Thanks for Purchaging our services on AccountingApp. Amount paid: "+paymentModal.getAmount();
+				System.out.println(user.getPhoneNumber());
 				twilioUtils.sendMessage(user.getPhoneNumber(), sms);
 				
 				jsonResponse.put("status", 1);
@@ -81,6 +82,9 @@ public class PaymentController {
 		JSONObject jsonResponse = new JSONObject();
 		jsonResponse.put("status", 0);
 		try {
+			System.out.println(creditCard);
+			
+			
 			UserCreditCard card = paymentService.saveCreditCard(creditCard);
 			if(card != null) {
 				jsonResponse.put("status", 1);

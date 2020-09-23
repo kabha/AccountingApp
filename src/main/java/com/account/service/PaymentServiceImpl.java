@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.account.common.MyUtils;
 import com.account.config.PaypalUtils;
 import com.account.dao.CreditCardRepository;
 import com.account.modal.UserCreditCard;
@@ -21,6 +22,10 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Autowired
 	private PaypalUtils paypalUtils;
+	
+	@Autowired
+	private MyUtils myUtils;
+	
 	@Autowired
 	private CreditCardRepository cardRepository;
 	
@@ -31,22 +36,26 @@ public class PaymentServiceImpl implements PaymentService {
 
 	//===============================CreditCard2=====================================
 	public UserCreditCard saveCreditCard(UserCreditCard card) {
+		System.out.println("Inside the saveCreditCard");
 		UserCreditCard savedCard = null;
 		CreditCard creditCard = new CreditCard();
+		
 		creditCard.setNumber(card.getCardNumber());
 		creditCard.setExpireMonth(card.getExpiryMonth());
 		creditCard.setExpireYear(card.getExpiryYear());
 		creditCard.setCvv2(card.getCvv2());
+		System.out.println("the Card Details" +card.getCardNumber());
 		try {
 			CreditCard createdCard = paypalUtils.createCreditCard(creditCard);
 			if(createdCard != null) {
 				card.setCardId(createdCard.getId());
-				card.setCardNumberFull(card.getCardNumber());
-				card.setCardNumber(createdCard.getNumber());
+				card.setCardNumberFull(card.getCardNumber())/*)*/;
+				card.setCardNumber(createdCard.getNumber())/*)*/;
 				card.setExpiryYear(createdCard.getExpireYear());
 				card.setType(createdCard.getType());
 				
 				card.setCreatedOn(LocalDateTime.now());
+				
 				savedCard = cardRepository.save(card);
 			}
 		} catch (PayPalRESTException ex) {
